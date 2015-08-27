@@ -1,0 +1,4 @@
+recursive-include paiji2_utils/static *
+recursive-include paiji2_utils/templates *
+recursive-include paiji2_utils/locale *
+recursive-include paiji2_utils/templatetags *
