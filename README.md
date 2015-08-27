@@ -28,7 +28,7 @@ For instance :
 {% profile_link user %}
 ```
 
-### `mail_link ###
+### `mail_link` ###
 
 A link to send an email to the user. The `text` is the text shown on the html page, the `subject` is the subject of the email.
 
