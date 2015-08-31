@@ -1,0 +1,25 @@
+language: python
+python:
+  - "2.7"
+env:
+  - DJANGO=1.6
+  - DJANGO=1.7
+  - DJANGO=1.8
+install:
+  - pip install pip -U
+  - pip install -q Django==$DJANGO
+  - pip install pep8 -U
+  - pip install pyflakes -U
+  - pip install coveralls -U
+  - pip install -r requirements.txt -U
+  - pip install -e .
+before_script:
+  - pep8 --exclude=migrations paiji2_utils
+  - pyflakes paiji2_utils
+script:
+  - coverage run --source=paiji2_utils manage.py test
+  - python setup.py test
+after_success:
+  - coveralls
+after_failure:
+  - cat validation_errors/*
