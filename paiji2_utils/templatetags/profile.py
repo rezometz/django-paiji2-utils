@@ -12,6 +12,7 @@ def profile_url(user):
     except:
         return ''
 
+
 @register.inclusion_tag('utils/mail_link.html')
 def mail_link(user, text, subject):
     return {
@@ -19,6 +20,7 @@ def mail_link(user, text, subject):
         'text': text,
         'subject': subject,
     }
+
 
 @register.inclusion_tag('utils/profile_link.html')
 def profile_link(user):
