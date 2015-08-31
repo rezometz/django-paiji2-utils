@@ -12,7 +12,7 @@ def urlize2(text):
     def replacement(matchobj):
         return (
             '<a target="_blank" title="{link}" href="{link}">['.format(
-            link=matchobj.group(0),
-        ) + _('link') + ']</a>')
+                link=matchobj.group(0),
+            ) + _('link') + ']</a>')
 
     return re.sub(url_regex, replacement, text)
