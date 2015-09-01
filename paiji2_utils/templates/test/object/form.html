@@ -1,0 +1,34 @@
+{% extends "home/layout_three_columns.html" %}
+
+{% load i18n %}
+
+{% block title %}
+    {% if form.instance and form.instance.pk %}
+        {% trans 'Edit a message' %}
+    {% else %}
+        {% trans 'Publish a message' %}
+    {% endif %}
+{% endblock %}
+{% block content %}
+<div class="well">
+    {% if form.instance and form.instance.pk %}
+    <h3>{% trans 'Edit a message' %}</h3>
+    {% else %}
+    <h3>{% trans 'Publish a message' %}</h3>
+    {% endif %}
+
+    <form action="{{ request.get_full_path }}" method="post">
+        {% csrf_token %}
+        <input type="hidden" value="{{ request.META.HTTP_REFERER }}" name="next" />
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success btn-block">
+            {% if form.instance and form.instance.pk %}
+                {% trans 'Update' %}
+            {% else %}
+                {% trans 'Publish' %}
+            {% endif %}
+        </button>
+        <div class="clearfix"></div>
+    </form>
+</div>
+{% endblock %}

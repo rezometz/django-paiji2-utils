@@ -1,0 +1,25 @@
+{% extends "home/layout_three_columns.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Confirm deleting an object' %}{% endblock %}
+
+{% block content %}
+<div class="well">
+    <h3>{% trans 'You want to delete this object ?' %}</h3>
+
+    <p>{{ object.name }}</p>
+
+    <form action="{{ request.get_full_path }}" method="post" role="form">
+        {% csrf_token %}
+
+        <input type="hidden" value="{{ request.META.HTTP_REFERER }}" name="next" />
+
+        <button type="submit" class="btn btn-danger btn-block">
+        {% trans 'Delete' %}
+        </button>
+
+        <div class="clearfix"></div>
+    </form>
+</div>
+
+{% endblock %}

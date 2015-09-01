@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from django.core.urlresolvers import (
     reverse, resolve, Resolver404, NoReverseMatch
 )
@@ -37,6 +38,7 @@ class SuccessUrlMixin(object):
         # "{{ request.META.HTTP_REFERER }}"
         try:
             HTTP_REFERER = self.request.POST['next']
+            print HTTP_REFERER
             # we delete the « http://www.website.domain/ » part
             path = '/' + '/'.join(
                 HTTP_REFERER.split('/')[3:]
