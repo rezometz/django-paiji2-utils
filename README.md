@@ -1,6 +1,13 @@
 # `paiji2_utils` #
 ===================
 
+## `SuccessUrlMixin` ##
+-----------------------
+
+Forbids a form view from redirecting to bad urls (for instance, a deleting view should not redirect to the editing url of the deleted object…)
+
+Usage : cf testviews, testurls, tests and django-paiji2-{carpooling|shoutbox} views.
+
 ## `readmore` tags library ##
 ----------------------------
 
