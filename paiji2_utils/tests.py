@@ -1,8 +1,7 @@
 from django.test import TestCase  # , Client
 from htmlvalidator.client import ValidatingClient
 from django.core.urlresolvers import reverse
-from paiji2_utils.models import TestObject as Object
-from django.core.urlresolvers import reverse
+from paiji2_utils.testmodels import TestObject as Object
 
 
 class TagsTest(TestCase):
@@ -70,6 +69,91 @@ class UrlTests(TestCase):
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200)
 
+    def test_simple_post_edition_redirection(self):
+
+        response = self.client.get(self.edit_1_url)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            self.edit_1_url,
+            {
+                'name': 'first new name',
+                'next': self.base_url + reverse('object-list')
+            }
+        )
+
+        # success url : the last visited page (home page)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            self.get_path(response['Location']),
+            reverse('object-list')
+        )
+
+    def test_simple_post_deletion_redirection(self):
+
+        response = self.client.get(self.delete_1_url)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            self.delete_1_url,
+            {
+                'next': self.base_url + reverse('object-list')
+            }
+        )
+
+        # success url : the last visited page (home page)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            self.get_path(response['Location']),
+            reverse('object-list')
+        )
+
+    def test_invalid_next_redirection(self):
+
+        for next_arg in (
+            self.base_url + reverse('object-list') + 'unknown_address',
+            self.base_url + 'arpisiueasrsui',
+            'rauisreiuaesrsr/ruie',
+            ' ',
+            '',
+        ):
+            response = self.client.get(self.edit_1_url)
+            self.assertEqual(response.status_code, 200)
+
+            response = self.client.post(
+                self.edit_1_url,
+                {
+                    'name': 'new name, next = ',
+                    'next': next_arg,
+                }
+            )
+
+            # success url : the home page ("next" is not valid)
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(
+                self.get_path(response['Location']),
+                reverse('object-list')
+            )
+
+    def test_not_next_in_POST_redirection(self):
+
+        response = self.client.get(self.edit_1_url)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            self.edit_1_url,
+            {
+                'name': 'new name, next = ',
+            }
+        )
+
+        # success url : the home page (no "next" value)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            self.get_path(response['Location']),
+            reverse('object-list')
+        )
+
     def test_post_edition_good_redirection(self):
 
         response = self.client.get(self.edit_1_url)
@@ -112,6 +196,67 @@ class UrlTests(TestCase):
         )
 
     def test_post_bad_edition_bad_redirection(self):
-        pass
 
+        response = self.client.get(
+            self.edit_1_url,
+        )
+        self.assertEqual(response.status_code, 200)
 
+        response = self.client.post(
+            self.edit_1_url,
+            {
+                'name': '',  # invalid form
+                'next': self.base_url + self.delete_2_url
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            self.edit_1_url,
+            {
+                'name': 'my best value',  # correction
+                'next': self.base_url + self.edit_1_url,
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+        # we don't want to be redirected to the edit form
+        self.assertEqual(
+            self.get_path(response['Location']),
+            reverse('object-list')
+        )
+
+    def test_post_bad_creation_bad_redirection(self):
+
+        response = self.client.get(
+            reverse('object-add')
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            reverse('object-add'),
+            {
+                'name': '',  # invalid form
+                'next': self.base_url + self.edit_1_url
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            reverse('object-add'),
+            {
+                'name': 'my best value',  # correction
+                'next': self.base_url + reverse('object-add')
+            }
+        )
+
+        self.assertEqual(Object.objects.count(), 5)
+
+        self.assertEqual(response.status_code, 302)
+        # we don't want to be redirected to the creation form
+        self.assertEqual(
+            self.get_path(response['Location']),
+            reverse('object-list')
+        )

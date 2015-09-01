@@ -3,6 +3,7 @@
 
 # django
 validation_errors/*
+**/*.mo
 
 # vim
 *.swp

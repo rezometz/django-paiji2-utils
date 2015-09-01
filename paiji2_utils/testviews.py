@@ -2,7 +2,7 @@ from paiji2_utils.views import SuccessUrlMixin
 from django.views import generic
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
-from .models import TestObject as Object
+from .testmodels import TestObject as Object
 
 
 class MySuccessUrl(SuccessUrlMixin):
@@ -33,6 +33,7 @@ class ObjectCreateView(MySuccessUrl, generic.CreateView):
     forbidden_url_names = (
         'object-add',
     )
+
 
 class ObjectEditView(MySuccessUrl, generic.UpdateView):
     model = Object

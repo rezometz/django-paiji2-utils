@@ -38,7 +38,6 @@ class SuccessUrlMixin(object):
         # "{{ request.META.HTTP_REFERER }}"
         try:
             HTTP_REFERER = self.request.POST['next']
-            print HTTP_REFERER
             # we delete the « http://www.website.domain/ » part
             path = '/' + '/'.join(
                 HTTP_REFERER.split('/')[3:]
@@ -49,8 +48,12 @@ class SuccessUrlMixin(object):
             return self.get_default_url()
 
         if (
-            match.url_name not in (self.get_forbidden_url_names() or tuple()) and
-            path not in (self.get_forbidden_urls() or tuple())
+            match.url_name not in (
+                self.get_forbidden_url_names() or tuple()
+            ) and
+            path not in (
+                self.get_forbidden_urls() or tuple()
+            )
         ):
             return path
         else:
