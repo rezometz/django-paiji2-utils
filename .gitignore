@@ -1,1 +1,8 @@
+# python
 *.pyc
+
+# django
+validation_errors/*
+
+# vim
+*.swp
