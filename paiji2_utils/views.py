@@ -30,8 +30,8 @@ class SuccessUrlMixin(object):
 
     def get_success_url(self):
 
-        if hasattr(self, 'message'):
-            messages.success(self.request, self.message)
+        if hasattr(self, 'message_success'):
+            messages.success(self.request, self.message_success)
 
         # the next POST value must be
         # "{{ request.META.HTTP_REFERER }}"
@@ -47,8 +47,8 @@ class SuccessUrlMixin(object):
             return self.get_default_url()
 
         if (
-            match.url_name not in self.get_forbidden_url_names() and
-            path not in self.get_forbidden_urls()
+            match.url_name not in (self.get_forbidden_url_names() or tuple()) and
+            path not in (self.get_forbidden_urls() or tuple())
         ):
             return path
         else:
