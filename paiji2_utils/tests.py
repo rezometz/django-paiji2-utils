@@ -174,6 +174,26 @@ class UrlTests(TestCase):
             self.delete_2_url,
         )
 
+    def test_post_edition_good_redirection_without_baseurl(self):
+
+        response = self.client.get(self.edit_1_url)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            self.edit_1_url,
+            {
+                'name': 'first new name',
+                'next':  self.delete_2_url
+            }
+        )
+
+        # success url : the last visited page (delete_2_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            self.get_path(response['Location']),
+            self.delete_2_url,
+        )
+
     def test_post_deletion_bad_redirection(self):
 
         response = self.client.get(self.delete_1_url)
